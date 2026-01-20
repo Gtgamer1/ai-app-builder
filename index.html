@@ -198,7 +198,7 @@
 
     <script>
         // Configuration
-        const BACKEND_URL = 'https://ai-app-builder-backend-2.vercel.app'; // Will be updated when deployed
+        const BACKEND_URL = 'https://ai-app-builder-backend.vercel.app'; // Will be updated when deployed
         let backendAvailable = false;
         let generatedCode = '';
 
@@ -296,21 +296,112 @@
 
         // Action buttons
         document.getElementById('githubBtn').addEventListener('click', async function() {
-            if (backendAvailable) {
-                alert('🚀 Creating GitHub repository...\n\nThis feature requires additional Composio API configuration.');
-            } else {
-                alert('🎉 GitHub Integration\n\nIn live mode, this would:\n✓ Create a new repository\n✓ Push all your code\n✓ Set up version control\n\nTo enable: Deploy the backend from github.com/Gtgamer1/ai-app-builder-backend');
+            const code = document.getElementById('codePreview').textContent;
+            const appType = document.getElementById('appType').value;
+            const description = document.getElementById('appDescription').value;
+
+            if (!code || code.length < 100) {
+                alert('⚠️ Please generate code first before pushing to GitHub!');
+                return;
+            }
+
+            // Generate a repository name from description
+            const repoName = 'ai-generated-' + appType + '-' + Date.now();
+
+            this.disabled = true;
+            this.textContent = '📦 Creating...';
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/deploy/github`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        repoName: repoName,
+                        description: description,
+                        code: code,
+                        fileName: appType === 'web' ? 'index.html' : 'App.js'
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const instructions = result.data.instructions.join('
+');
+                    alert(`✅ ${result.data.message}
+
+📋 Instructions:
+${instructions}
+
+💡 Tip: ${result.data.tip}`);
+
+                    // Open GitHub new repo page
+                    if (result.data.suggestedUrl) {
+                        window.open(result.data.suggestedUrl, '_blank');
+                    }
+                } else {
+                    alert('❌ Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('❌ Network error: ' + error.message);
+            } finally {
+                this.disabled = false;
+                this.textContent = '📦 Push to GitHub';
             }
         });
-
+        
         document.getElementById('vercelBtn').addEventListener('click', async function() {
-            if (backendAvailable) {
-                alert('🚀 Deploying to Vercel...\n\nThis feature requires additional Composio API configuration.');
-            } else {
-                alert('🚀 Vercel Deployment\n\nIn live mode, this would:\n✓ Deploy your app\n✓ Generate live URL\n✓ Set up automatic deployments\n\nTo enable: Deploy the backend from github.com/Gtgamer1/ai-app-builder-backend');
+            const code = document.getElementById('codePreview').textContent;
+            const appType = document.getElementById('appType').value;
+            const description = document.getElementById('appDescription').value;
+
+            if (!code || code.length < 100) {
+                alert('⚠️ Please generate code first before deploying!');
+                return;
+            }
+
+            const projectName = 'ai-app-' + Date.now();
+
+            this.disabled = true;
+            this.textContent = '🚀 Preparing...';
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/deploy/vercel`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        projectName: projectName,
+                        code: code
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const instructions = result.data.instructions.join('
+');
+                    alert(`✅ ${result.data.message}
+
+📋 Instructions:
+${instructions}
+
+💡 Tip: ${result.data.tip}`);
+
+                    // Open Vercel new project page
+                    if (result.data.suggestedUrl) {
+                        window.open(result.data.suggestedUrl, '_blank');
+                    }
+                } else {
+                    alert('❌ Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('❌ Network error: ' + error.message);
+            } finally {
+                this.disabled = false;
+                this.textContent = '🚀 Deploy to Vercel';
             }
         });
-
+        
         document.getElementById('downloadBtn').addEventListener('click', function() {
             const code = document.getElementById('codePreview').textContent;
             const appType = document.getElementById('appType').value;
