@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Updated: 1768916234 -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI App Builder - Create Any App Instantly</title>
@@ -428,7 +429,8 @@ ${instructions}
         function getSampleCode(appType, description) {
             // Demo code templates (same as before)
             const samples = {
-                web: `<!DOCTYPE html>\n<html lang="en">\n<head>\n    <title>Generated Web App</title>\n    <style>\n        body { font-family: Arial, sans-serif; padding: 20px; }\n        h1 { color: #667eea; }\n    </style>\n</head>\n<body>\n    <h1>Your Web App</h1>\n    <p><strong>Description:</strong> ${description}</p>\n    <p>✅ Generated with AI • Ready to customize</p>\n</body>\n</html>`,
+                web: `<!DOCTYPE html>\n<html lang="en">\n<head>
+    <!-- Updated: 1768916234 -->\n    <title>Generated Web App</title>\n    <style>\n        body { font-family: Arial, sans-serif; padding: 20px; }\n        h1 { color: #667eea; }\n    </style>\n</head>\n<body>\n    <h1>Your Web App</h1>\n    <p><strong>Description:</strong> ${description}</p>\n    <p>✅ Generated with AI • Ready to customize</p>\n</body>\n</html>`,
                 mobile: `// React Native - ${description}\nimport React from 'react';\nimport { View, Text } from 'react-native';\n\nconst App = () => (\n  <View style={{padding: 20}}>\n    <Text style={{fontSize: 24}}>Your Mobile App</Text>\n    <Text>${description}</Text>\n  </View>\n);\n\nexport default App;`,
                 api: `// Node.js API - ${description}\nconst express = require('express');\nconst app = express();\n\napp.get('/api', (req, res) => {\n  res.json({ message: '${description}' });\n});\n\napp.listen(3000);`,
                 ai: `// AI Agent - ${description}\nclass AIAgent {\n  async process(input) {\n    return { response: 'AI processing: ' + input };\n  }\n}`
